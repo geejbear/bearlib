@@ -58,5 +58,6 @@ void CardType(char * card_num) {
         } else if ((is_visa) && ((len == 16) || (len == 13))) {
             printf("VISA\n");
         }
+    free(card_num);
     return;
 }
