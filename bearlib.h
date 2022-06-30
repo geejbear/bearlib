@@ -4,9 +4,12 @@
 #include <stdio.h>
 
 
-int CardID(int a, int b) {
-    a *= 10; 
-    return a + b;
+int CardID(char * str) {
+    char * s = strdup(str);
+    s[2] = '\0';
+    int card_id = atoi(s);
+    free(s);
+    return card_id;
 }
 
 int CastingOutNines(int n) { 
@@ -15,18 +18,17 @@ int CastingOutNines(int n) {
     }
     return n;        
 }
-bool Luhn(char * card_num) {
-    
-    card_num = malloc(sizeof(card_num) * sizeof(int));
-    int len = strlen(card_num); 
+
+bool Luhn(const char * str) {
+    int len = strlen(str); 
+    char * card_num = malloc(sizeof(len) * sizeof(int)); 
+    card_num = strcpy(card_num, str);
     for (int i = 0; i < len; i++) {
         card_num[i] -= '0';
-        printf("card number: %c\n", card_num[i]);
     }
     
     int total = 0;
-    //TODO bring back double for loops
-    for (int i = len - 2; i >= 0; i++) { 
+    for (int i = len - 2; i >= 0; i--) { 
         if (i % 2 == 0) {
             card_num[i] *= 2;
             card_num[i] = CastingOutNines(card_num[i]);
@@ -35,22 +37,19 @@ bool Luhn(char * card_num) {
             total += card_num[i];
         }
     }
-    printf("%d\n", total);
-
     free(card_num);
 
     if (total % 10 == 0) {
         return true;
     }
-    return false;
-
-    
+    return false;    
 }
+
 void CardType(char * card_num) {
     card_num = malloc(sizeof(card_num) * sizeof(int));
     int len = strlen(card_num); 
 
-    int card_id = CardID(card_num[0], card_num[1]);
+    int card_id = CardID(card_num);
     bool is_visa = card_num[0] == '4';
         if ((card_id == 34 || card_id == 37) && (len == 15)) {
             printf("AMEX\n");
@@ -60,19 +59,4 @@ void CardType(char * card_num) {
             printf("VISA\n");
         }
     return;
-}
-int main(int argc, char ** argv)
-{
-    if (argc != 2) {
-         printf("usage: %s [credit card number]", argv[0]);
-         return EXIT_FAILURE;
-    }
-    
-    if (Luhn(argv[1]) == true) {
-        printf("yes");
-    } else {
-        printf("no");
-    }
-    
-    return EXIT_SUCCESS;
 }
