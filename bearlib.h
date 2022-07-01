@@ -1,10 +1,11 @@
+#include "bearlib.h"
+
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include <stdio.h>
 
-
-int CardID(char * str) {
+int CardID(const char * str) {
     char * s = strdup(str);
     s[2] = '\0';
     int card_id = atoi(s);
@@ -21,7 +22,7 @@ int CastingOutNines(int n) {
 
 bool Luhn(const char * str) {
     int len = strlen(str); 
-    char * card_num = malloc(sizeof(len) * sizeof(int)); 
+    char * card_num = malloc(len * sizeof(int)); 
     card_num = strcpy(card_num, str);
     for (int i = 0; i < len; i++) {
         card_num[i] -= '0';
@@ -42,12 +43,13 @@ bool Luhn(const char * str) {
     if (total % 10 == 0) {
         return true;
     }
-    return false;    
-}
+    return false;
 
-void CardType(char * card_num) {
-    card_num = malloc(sizeof(card_num) * sizeof(int));
-    int len = strlen(card_num); 
+    
+}
+void CardType(const char * str) {
+    int len = strlen(str);
+    char * card_num = malloc(len * sizeof(int));
 
     int card_id = CardID(card_num);
     bool is_visa = card_num[0] == '4';
@@ -60,4 +62,17 @@ void CardType(char * card_num) {
         }
     free(card_num);
     return;
+}
+
+int main(int argc, char ** argv) {
+    if (argc != 2) {
+        printf("Usage: %s [card number]", argv[0]);
+        return 1;
+    }
+
+    if (Luhn(argv[1])) {
+        puts("Valid card");
+    } else {
+        puts("Invalid card");
+    }
 }
